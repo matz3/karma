@@ -22,6 +22,18 @@ function findFile (path, files) {
   return Array.from(files).find((file) => file.path === path)
 }
 
+function mockGlob (patternList, mg) {
+  return {
+    Glob: function (pattern, opts, cb) {
+      Promise.resolve().then(cb)
+      return {
+        found: patternList[pattern],
+        statCache: mg.statCache
+      }
+    }
+  }
+}
+
 const PATTERN_LIST = {
   '/some/*.js': ['/some/a.js', '/some/b.js'],
   '*.txt': ['/c.txt', '/a.txt', '/b.txt'],
@@ -73,14 +85,7 @@ describe('FileList', () => {
       mg = MG
       emitter = new EventEmitter()
 
-      glob = {
-        Glob: function (pattern, opts) {
-          return {
-            found: patternList[pattern],
-            statCache: mg.statCache
-          }
-        }
-      }
+      glob = mockGlob(patternList, mg)
 
       List = proxyquire('../../lib/file-list', {
         helper: helper,
@@ -202,14 +207,7 @@ describe('FileList', () => {
 
       emitter = new EventEmitter()
 
-      glob = {
-        Glob: function (pattern, opts) {
-          return {
-            found: patternList[pattern],
-            statCache: mg.statCache
-          }
-        }
-      }
+      glob = mockGlob(patternList, mg)
 
       List = proxyquire('../../lib/file-list', {
         helper: helper,
@@ -240,14 +238,7 @@ describe('FileList', () => {
       mg = _.cloneDeep(MG)
       emitter = new EventEmitter()
 
-      glob = {
-        Glob: function (pattern, opts) {
-          return {
-            found: patternList[pattern],
-            statCache: mg.statCache
-          }
-        }
-      }
+      glob = mockGlob(patternList, mg)
 
       List = proxyquire('../../lib/file-list', {
         helper: helper,
@@ -430,14 +421,7 @@ describe('FileList', () => {
 
       emitter = new EventEmitter()
 
-      glob = {
-        Glob: function (pattern, opts) {
-          return {
-            found: patternList[pattern],
-            statCache: mg.statCache
-          }
-        }
-      }
+      glob = mockGlob(patternList, mg)
 
       clock = sinon.useFakeTimers()
       // This hack is needed to ensure lodash is using the fake timers
@@ -559,14 +543,7 @@ describe('FileList', () => {
 
       emitter = new EventEmitter()
 
-      glob = {
-        Glob: function (pattern, opts) {
-          return {
-            found: patternList[pattern],
-            statCache: mg.statCache
-          }
-        }
-      }
+      glob = mockGlob(patternList, mg)
 
       clock = sinon.useFakeTimers()
       // This hack is needed to ensure lodash is using the fake timers
@@ -681,14 +658,7 @@ describe('FileList', () => {
 
       emitter = new EventEmitter()
 
-      glob = {
-        Glob: function (pattern, opts) {
-          return {
-            found: patternList[pattern],
-            statCache: mg.statCache
-          }
-        }
-      }
+      glob = mockGlob(patternList, mg)
 
       clock = sinon.useFakeTimers()
       // This hack is needed to ensure lodash is using the fake timers
@@ -760,14 +730,7 @@ describe('FileList', () => {
 
       emitter = new EventEmitter()
 
-      glob = {
-        Glob: function (pattern, opts) {
-          return {
-            found: patternList[pattern],
-            statCache: mg.statCache
-          }
-        }
-      }
+      glob = mockGlob(patternList, mg)
 
       modified = sinon.stub()
       emitter.on('file_list_modified', modified)
